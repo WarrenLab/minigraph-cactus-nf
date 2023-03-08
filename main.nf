@@ -1,12 +1,32 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
+/*
+ * Parameters
+ */
+// Mandatory parameters
 params.seqFile = ""
-params.maxAlignLength = 10000
 params.reference = ""
-params.extraSplitArgs = ""
+
+// Optional parameters
+params.maxAlignLength = 10000
+params.chromosomesFile = ""
+params.finalReference = ""
+
+if (params.seqFile == "" || params.reference == "")
+{
+    println "Must specify --seqFile and --reference. See README for details."
+    System.exit(1)
+}
 
 seqFile = file(params.seqFile)
+
+extraSplitArgs = ""
+if (params.chromosomesFile != "")
+{
+    chromosomesFile = file(params.chromosomesFile)
+    extraSplitArgs = "--refContigsFile $chromosomesFile --otherContig Un"
+}
 
 process CACTUS_MINIGRAPH {
     input:
@@ -51,7 +71,7 @@ process CACTUS_GRAPHMAP_SPLIT {
 
     """
     cactus-graphmap-split ./jobStore $seqFile graph.gfa alignment.paf \
-        --reference $params.reference --outDir chroms $params.extraSplitArgs
+        --reference $params.reference --outDir chroms $extraSplitArgs
     """
 }
 
@@ -87,6 +107,21 @@ process CACTUS_GRAPHMAP_JOIN {
     """
 }
 
+process VG_REREFERENCE {
+    input:
+    path("pangenome/")
+
+    output:
+    path("pangenome.d2.${}-ref.gbz")
+
+    """
+    vg gbwt \
+        -Z pangenome/pangenome.d2.gbz \
+        --set-tag "reference_samples=${params.finalReference}" \
+        --gbz-format -g pangenome.d2.${params.finalReference}-ref.gbz
+    """
+}
+
 workflow {
     CACTUS_GRAPHMAP(CACTUS_MINIGRAPH(seqFile))
     CACTUS_GRAPHMAP_SPLIT(
@@ -97,4 +132,6 @@ workflow {
     )
     CACTUS_ALIGN_BATCH(CACTUS_GRAPHMAP_SPLIT.out)
     CACTUS_GRAPHMAP_JOIN(CACTUS_ALIGN_BATCH.out)
+
+    if (params.finalReference != "") VG_REREFERENCE(CACTUS_GRAPHMAP_JOIN.out)
 }
