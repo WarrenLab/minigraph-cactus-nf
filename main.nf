@@ -116,7 +116,7 @@ process VG_REREFERENCE {
 
     """
     vg gbwt \
-        -Z pangenome/pangenome.d2.gbz \
+        -Z pangenome/pangenome/pangenome.d2.gbz \
         --set-tag "reference_samples=${params.finalReference}" \
         --gbz-format -g pangenome.d2.${params.finalReference}-ref.gbz
     """
