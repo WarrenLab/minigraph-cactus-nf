@@ -11,6 +11,7 @@ params.reference = ""
 // Optional parameters
 params.maxAlignLength = 10000
 params.chromosomesFile = ""
+params.additionalToilParams = ""
 
 if (params.seqFile == "" || params.reference == "")
 {
@@ -38,6 +39,7 @@ process CACTUS_MINIGRAPH {
     """
     cp $seqFile ./seqFile
     cactus-minigraph ./jobStore ./seqFile graph.gfa \
+        $params.additionalToilParams \
         --reference $params.reference --mapCores $task.cpus
     """
 }
@@ -53,6 +55,7 @@ process CACTUS_GRAPHMAP {
 
     """
     cactus-graphmap ./jobStore $seqFile $graphGfa alignment.paf \
+        $params.additionalToilParams \
         --outputFasta graph.gfa.fa \
         --reference $params.reference --mapCores $task.cpus
     """
@@ -70,6 +73,7 @@ process CACTUS_GRAPHMAP_SPLIT {
 
     """
     cactus-graphmap-split ./jobStore $seqFile graph.gfa alignment.paf \
+        $params.additionalToilParams \
         --reference $params.reference --outDir chroms $extraSplitArgs
     """
 }
@@ -83,6 +87,7 @@ process CACTUS_ALIGN_BATCH {
 
     """
     cactus-align-batch ./jobStore ${chromsDir}/chromfile.txt chrom-alignments \
+        $params.additionalToilParams \
         --alignCores $task.cpus \
         --alignOptions "--pangenome --reference $params.reference \
                         --outVG --maxLen $params.maxAlignLength"
@@ -98,6 +103,7 @@ process CACTUS_GRAPHMAP_JOIN {
 
     """
     cactus-graphmap-join ./jobStore \
+        $params.additionalToilParams \
         --vg $chromAlignments/*.vg \
         --hal $chromAlignments/*.hal \
         --outDir ./pangenome --outName pangenome \
