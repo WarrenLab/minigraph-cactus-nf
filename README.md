@@ -42,12 +42,6 @@ If it gets interrupted, you can have it resume where it left off with the
   a set of jobs for each one, no matter how small. If you give it a list of
   chromosome names, it will instead run all of the unplaced sequence together
   as a single set of jobs.
-* `--finalReference`: sometimes the best assembly you have isn't the one you
-  actually want to use as a reference downstream, e.g., because it isn't
-  annotated. If this is the case, you can specify the best assembly with
-  `--reference` so that it gets used as the alignment backbone, and then
-  specify the assembly you actually want to use as a reference downstream with
-  `--finalReference`.
 
 [mgc]: <https://github.com/ComparativeGenomicsToolkit/cactus/blob/master/doc/pangenome.md>
 [nf]: <https://www.nextflow.io/>
