@@ -11,6 +11,7 @@ params.reference = ""
 // Optional parameters
 params.maxAlignLength = 10000
 params.chromosomesFile = ""
+params.scratch = ""
 params.additionalToilParams = ""
 
 if (params.seqFile == "" || params.reference == "")
@@ -28,6 +29,12 @@ if (params.chromosomesFile != "")
     extraSplitArgs = "--refContigsFile $chromosomesFile --otherContig Un"
 }
 
+additionalToilParams = "$params.additionalToilParams"
+if (params.scratch != "")
+{
+    additionalToilParams += " --workDir $params.scratch"
+}
+
 process CACTUS_MINIGRAPH {
     input:
     path(seqFile)
@@ -39,7 +46,7 @@ process CACTUS_MINIGRAPH {
     """
     cp $seqFile ./seqFile
     cactus-minigraph ./jobStore ./seqFile graph.gfa \
-        $params.additionalToilParams \
+        $additionalToilParams \
         --reference $params.reference --mapCores $task.cpus
     """
 }
@@ -55,7 +62,7 @@ process CACTUS_GRAPHMAP {
 
     """
     cactus-graphmap ./jobStore $seqFile $graphGfa alignment.paf \
-        $params.additionalToilParams \
+        $additionalToilParams \
         --outputFasta graph.gfa.fa \
         --reference $params.reference --mapCores $task.cpus
     """
@@ -73,7 +80,7 @@ process CACTUS_GRAPHMAP_SPLIT {
 
     """
     cactus-graphmap-split ./jobStore $seqFile graph.gfa alignment.paf \
-        $params.additionalToilParams \
+        $additionalToilParams \
         --reference $params.reference --outDir chroms $extraSplitArgs
     """
 }
@@ -87,7 +94,7 @@ process CACTUS_ALIGN_BATCH {
 
     """
     cactus-align-batch ./jobStore ${chromsDir}/chromfile.txt chrom-alignments \
-        $params.additionalToilParams \
+        $additionalToilParams \
         --alignCores $task.cpus \
         --alignOptions "--pangenome --reference $params.reference \
                         --outVG --maxLen $params.maxAlignLength"
@@ -103,7 +110,7 @@ process CACTUS_GRAPHMAP_JOIN {
 
     """
     cactus-graphmap-join ./jobStore \
-        $params.additionalToilParams \
+        $additionalToilParams \
         --vg $chromAlignments/*.vg \
         --hal $chromAlignments/*.hal \
         --outDir ./pangenome --outName pangenome \
