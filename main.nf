@@ -115,7 +115,8 @@ process CACTUS_GRAPHMAP_JOIN {
         --hal $chromAlignments/*.hal \
         --outDir ./pangenome --outName pangenome \
         --reference $params.reference --vcf --giraffe \
-        --indexCores ${task.cpus - 1}
+        --indexCores ${task.cpus - 1} \
+        --giraffe full clip filter
     """
 }
 
