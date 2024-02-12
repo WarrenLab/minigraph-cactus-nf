@@ -42,6 +42,8 @@ If it gets interrupted, you can have it resume where it left off with the
   a set of jobs for each one, no matter how small. If you give it a list of
   chromosome names, it will instead run all of the unplaced sequence together
   as a single set of jobs.
+* `--scratch`: path to an existing directory for Toil job data.
+* `--jobStore`: path to which minigraph-cactus commands will write job data. This directory is created by Toil and must not already exist!
 
 [mgc]: <https://github.com/ComparativeGenomicsToolkit/cactus/blob/master/doc/pangenome.md>
 [nf]: <https://www.nextflow.io/>
