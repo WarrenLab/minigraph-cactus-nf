@@ -36,6 +36,11 @@ if (params.scratch != "")
     additionalToilParams += " --workDir $params.scratch"
 }
 
+if (params.jobStore == "")
+{
+    params.jobStore = "./jobStore"
+}
+
 process CACTUS_MINIGRAPH {
     input:
     path(seqFile)
