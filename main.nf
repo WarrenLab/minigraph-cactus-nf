@@ -13,7 +13,7 @@ params.maxAlignLength = 10000
 params.chromosomesFile = ""
 params.scratch = ""
 params.additionalToilParams = ""
-params.jobStore = ""
+params.jobStore = "./jobStore"
 
 if (params.seqFile == "" || params.reference == "")
 {
@@ -34,11 +34,6 @@ additionalToilParams = "$params.additionalToilParams"
 if (params.scratch != "")
 {
     additionalToilParams += " --workDir $params.scratch"
-}
-
-if (params.jobStore == "")
-{
-    params.jobStore = "./jobStore"
 }
 
 process CACTUS_MINIGRAPH {
