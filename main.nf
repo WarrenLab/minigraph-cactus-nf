@@ -13,6 +13,7 @@ params.maxAlignLength = 10000
 params.chromosomesFile = ""
 params.scratch = ""
 params.additionalToilParams = ""
+params.jobStore = "./jobStore"
 
 if (params.seqFile == "" || params.reference == "")
 {
@@ -45,7 +46,7 @@ process CACTUS_MINIGRAPH {
 
     """
     cp $seqFile ./seqFile
-    cactus-minigraph ./jobStore ./seqFile graph.gfa \
+    cactus-minigraph $params.jobStore ./seqFile graph.gfa \
         $additionalToilParams \
         --reference $params.reference --mapCores $task.cpus
     """
@@ -61,7 +62,7 @@ process CACTUS_GRAPHMAP {
     path("graph.gfa.fa"), emit: graphFasta
 
     """
-    cactus-graphmap ./jobStore $seqFile $graphGfa alignment.paf \
+    cactus-graphmap $params.jobStore $seqFile $graphGfa alignment.paf \
         $additionalToilParams \
         --outputFasta graph.gfa.fa \
         --reference $params.reference --mapCores $task.cpus
@@ -79,7 +80,7 @@ process CACTUS_GRAPHMAP_SPLIT {
     path("chroms/")
 
     """
-    cactus-graphmap-split ./jobStore $seqFile graph.gfa alignment.paf \
+    cactus-graphmap-split $params.jobStore $seqFile graph.gfa alignment.paf \
         $additionalToilParams \
         --reference $params.reference --outDir chroms $extraSplitArgs
     """
@@ -93,7 +94,7 @@ process CACTUS_ALIGN_BATCH {
     path("chrom-alignments/")
 
     """
-    cactus-align-batch ./jobStore ${chromsDir}/chromfile.txt chrom-alignments \
+    cactus-align-batch $params.jobStore ${chromsDir}/chromfile.txt chrom-alignments \
         $additionalToilParams \
         --alignCores $task.cpus \
         --alignOptions "--pangenome --reference $params.reference \
@@ -109,7 +110,7 @@ process CACTUS_GRAPHMAP_JOIN {
     path("pangenome/")
 
     """
-    cactus-graphmap-join ./jobStore \
+    cactus-graphmap-join $params.jobStore \
         $additionalToilParams \
         --vg $chromAlignments/*.vg \
         --hal $chromAlignments/*.hal \
