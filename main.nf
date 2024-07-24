@@ -48,7 +48,7 @@ process CACTUS_MINIGRAPH {
     cp $seqFile ./seqFile
     cactus-minigraph $params.jobStore ./seqFile graph.gfa \
         $additionalToilParams \
-        --reference $params.reference --mapCores $task.cpus
+        --reference $params.reference --mgCores $task.cpus
     """
 }
 
