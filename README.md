@@ -3,6 +3,9 @@
 A nextflow pipeline for running minigraph-cactus
 
 ## Introduction
+
+**Update (13 Sept 2024)** New versions of cactus are able to run the full minigraph-cactus pipeline with a single command. Therefore, a nextflow pipeline like this one is really not necessary. I do not recommend using my pipeline anymore as it is written for an older version of cactus and does not work with better more recent versions. It's better and simpler to use the most recent version of cactus with its nice single command instead.
+
 [minigraph-cactus][mgc] is a pipeline for making a pangenome graph out of
 assemblies of genomes with too much shared variation for a phylogeny to make
 sense, e.g., a set of assemblies of different individuals in the same species.
